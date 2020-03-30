@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="Acompanhe as últimas informações sobre número de casos confirmados e mortes pela Covid-19">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link rel="stylesheet" href="/assets/css/app.css">
+	<title>Mapa do Covid-19 no Brasil</title>
+</head>
+<body>
+	<nav class="indigo darken-4" role="navigation">
+		<div class="container nav-wrapper">
+			<a class="brand-logo" href="/">Mapa do Covid-19<span class="hide-on-med-and-down"> no Brasil</span></a>
+		</div>
+	</nav>
+	<main>
+		<div class="container">
+			<div class="row">
+				<div class="col s12 m12 l12 xl12">
+					<svg id="map" width="100%" viewBox="0 0 960 500"></svg>
+				</div>
+				<div id="totals" class="col s12 m12 l6 xl6">
+					<h4 class="confirmed"></h4>
+					<h4 class="deaths"></h4>
+				</div>
+				<div id="zoom" class="col s12 m12 l6 xl6">
+					<p>Use o mouse para mover e dar zoom na imagem e passe sobre os estados para ver detalhes.</p>
+					<button class="btn right">Reset zoom</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12 m12 l12 xl12">
+					<p style="text-align: right" class="hide-on-large-only">Deslize a tabela para o lado pra ver os outros estados.</p>
+					<table id="tbl" class="highlight responsive-table">
+						<thead>
+							<tr>
+								<th>Estado</th>
+								<th>Casos confirmados</th>
+								<th>Mortes</th>
+								<th>Última atualização</th>
+								<th>População estimada</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</main>
+	<footer class="page-footer indigo darken-4">
+		<div class="container">
+			<div class="row">
+				<div class="col left">Dados retirados do site <a href="https://brasil.io/dataset/covid19/caso">Brasil.io</a></div>
+				<div class="col right">Desenvolvido por @hitalos</div>
+			</div>
+		</div>
+	</footer>
+	<script src="/assets/js/d3.v5.min.js"></script>
+	<script src="/assets/js/brasil.js"></script>
+</body>
+</html>

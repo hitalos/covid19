@@ -1,0 +1,42 @@
+html, body, svg {
+	height: 100%;
+	margin: 0;
+}
+body {
+	display: flex;
+	flex-direction: column;
+}
+main {
+	flex: 1;
+}
+path {
+	fill: #f0f0f0;
+	stroke: black;
+	stroke-width: 0.2px;
+}
+path:hover {
+	cursor: pointer;
+	stroke-linecap: square;
+	stroke-width: 1px;
+}
+text {
+	font-size: .5em;
+	text-anchor: middle;
+	text-shadow:
+	-1px -1px 3px rgba(255, 255, 255, 0.5),
+	-1px 1px 3px rgba(255, 255, 255, 0.5),
+	1px -1px 3px rgba(255, 255, 255, 0.5),
+	1px 1px 3px rgba(255, 255, 255, 0.5);
+	pointer-events: none;
+}
+@media only screen and (min-width: 992px) {
+	#tbl td, #tbl th {
+		text-align: center;
+	}
+	#tbl td:first-child, #tbl th:first-child {
+		text-align: left;
+	}
+	#tbl td:last-child, #tbl th:last-child {
+		text-align: right;
+	}
+}
