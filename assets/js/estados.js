@@ -7,6 +7,7 @@
 	const gPolygons = g.append('g')
 	const gTexts = g.append('g')
 	const gScale = svg.append('g').attr('transform', 'translate(900, 400)')
+	const tooltip = d3.select('.col').insert('div').classed('tooltip', true).style('opacity', 0)
 	const formatN = (str) => d3.format(',')(str).replace(/,/g, '.')
 
 	const calcProjection = (data) => {
@@ -25,18 +26,31 @@
 		return d3.geoMercator().center(center).scale(scale)
 	}
 
-	const setTitle = ({ properties }) => {
-		const { nome: n, populacao: p, confirmed: c, deaths: d, lastUpdate: l } = properties
-		let info = `${n}\nPopulação estimada: ${formatN(p)}`
-		if (c > 0) {
+	const showTooltip = ({ properties }) => {
+		tooltip.transition().style('opacity', 0.9)
+			.style('left', () => (d3.event.pageX)+'px')
+			.style('top', () => (d3.event.pageY)+'px')
+
+		if (properties.confirmed && properties.confirmed !== 0) {
+			const { nome: n, populacao: p, confirmed: c, deaths: d, lastUpdate: l } = properties
 			const tx = c !== 0 ? Math.round((d / c) * 10000) / 100 : 0
-			info += `\nCasos confirmados: ${c}`
-			+ `\nMortes: ${d}`
-			+ `\nÚltima atualização: ${l}`
-			+ `\nProporção de mortes: ${tx}%`
+			tooltip.html(
+				`<strong>${n}</strong><br>
+				<strong>Casos confirmados:</strong> ${c}<br>
+				<strong>Mortes:</strong> ${d}<br>
+				<strong>População estimada:</strong> ${formatN(p)}<br>
+				<strong>Última atualização:</strong> ${l}<br>
+				<strong>Proporção de mortes: ${tx}%`
+			)
+			return
 		}
-		return info
+		tooltip.html(
+			`<strong>${properties.nome}</strong><br>
+			<strong>População estimada:</strong> ${formatN(properties.populacao)}`
+		)
 	}
+
+	const hideTooltip = () => tooltip.transition().duration(1000).style('opacity', 0)
 
 	const IsChangedField = (field, cb) => (d, i, nodes) => {
 		const n = parseInt(nodes.item(i).textContent, 10) || 0
@@ -132,14 +146,12 @@
 			.append('path')
 			.attr('d', path)
 			.attr('style', (d) => d.properties.confirmed === 0 ? null : `fill: ${color(d.properties.confirmed)}`)
-			.append('title')
-			.text(setTitle)
+			.on('mousemove', showTooltip)
+			.on('mouseout', hideTooltip)
 
 		gPolygons.selectAll('path')
 			.transition().duration(1000)
 			.attr('style', (d) => d.properties.confirmed === 0 ? null : `fill: ${color(d.properties.confirmed)}`)
-			.select('title')
-			.text(setTitle)
 	}
 
 	const mountTexts = (data, projection) => {

@@ -33,6 +33,14 @@ text {
 	1px 1px 3px rgba(255, 255, 255, 0.5);
 	pointer-events: none;
 }
+.tooltip {
+	background: lightsteelblue;
+	border: 0px;
+	border-radius: 8px;
+	padding: 8px;
+	position: absolute;
+	pointer-events: none;
+}
 @media only screen and (min-width: 992px) {
 	#tbl td, #tbl th {
 		text-align: center;
