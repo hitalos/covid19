@@ -9,6 +9,7 @@
 	const gScale = svg.append('g').attr('transform', 'translate(900, 400)')
 	const tooltip = d3.select('.col').insert('div').classed('tooltip', true).style('opacity', 0)
 	const formatN = (str) => d3.format(',')(str).replace(/,/g, '.')
+	const imported = { confirmed: 0, deaths: 0 }
 
 	const calcProjection = (data) => {
 		const points = data.map(d => {
@@ -61,6 +62,9 @@
 
 	const prepareData = (data, demographicData, covid19) => {
 		const cases = covid19.filter(m => m.state === UF && m.is_last === 'True' && m.place_type === 'city')
+		const [importedCases] = cases.filter(m => m.city === "Importados/Indefinidos")
+		imported.confirmed = +importedCases.confirmed || 0
+		imported.deaths = +importedCases.deaths || 0
 		const { series } = demographicData.resultados[0]
 		data.forEach(({ properties }) => {
 			series.forEach((s) => {
@@ -129,11 +133,11 @@
 	const mountTotals = (data) => {
 		d3.select('#totals').select('.confirmed').text(() => {
 			const confirmed = data.map((uf) => uf.properties.confirmed || 0).reduce((accum, i) => accum + i, 0)
-			return `Total de confirmações: ${confirmed}`
+			return `Total de confirmações: ${confirmed + imported.confirmed}`
 		})
 		d3.select('#totals').select('.deaths').text(() => {
 			const deaths = data.map((uf) => uf.properties.deaths || 0).reduce((accum, i) => accum + i, 0)
-			return `Total de mortes: ${deaths}`
+			return `Total de mortes: ${deaths + imported.deaths}`
 		})
 		d3.select('#totals').select('.lastUpdate').text(`Última atualização: ${data[0].properties.lastUpdate}`)
 	}
