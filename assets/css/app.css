@@ -9,6 +9,10 @@ body {
 main {
 	flex: 1;
 }
+h1 {
+	font-size: 2em;
+	margin: 10px;
+}
 path {
 	fill: #f0f0f0;
 	stroke: black;
