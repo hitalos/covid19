@@ -23,9 +23,9 @@
 		imported.properties = {
 			codarea: 0,
 			nome: 'Importados ou indefinidos',
-			confirmed: +importedCases.confirmed || 0,
-			deaths: +importedCases.deaths || 0,
-			lastUpdate: importedCases.date.split('-').reverse().join('/'),
+			confirmed: importedCases ? +importedCases.confirmed : 0,
+			deaths: importedCases ? +importedCases.deaths : 0,
+			lastUpdate: importedCases ? importedCases.date.split('-').reverse().join('/') : 'n/a',
 			populacao: 0,
 		}
 		const { series } = demographicData.resultados[0]
