@@ -14,11 +14,11 @@ fi
 
 REPO=$DIR/dados
 
-curl -sS -o "$TEMP" 'https://brasil.io/dataset/covid19/caso?place_type=state&is_last=True&format=csv' &&	cp "$TEMP" "$REPO/casos.csv"
+curl -sS -o "$TEMP" 'https://brasil.io/dataset/covid19/caso?place_type=state&format=csv' &&	cp "$TEMP" "$REPO/casos.csv"
 
 for UF in $STATES; do
 	echo "Baixando $UF..."
-	curl -sS -o "$TEMP" "https://brasil.io/dataset/covid19/caso?state=$UF&place_type=city&is_last=True&format=csv"
+	curl -sS -o "$TEMP" "https://brasil.io/dataset/covid19/caso?state=$UF&place_type=city&format=csv"
 	SIZE=$(stat -c '%s' "$TEMP")
 	if [[ "$SIZE" != "0" ]]; then
 		cp "$TEMP" "$REPO/$UF/casos.csv"

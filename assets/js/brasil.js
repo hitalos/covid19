@@ -29,7 +29,7 @@
 
 	const prepareData = (data, cases) => {
 		data.forEach(({ properties }) => {
-			const c = cases.filter(uf => uf.city_ibge_code === properties.codarea)
+			const c = cases.filter(uf => uf.city_ibge_code === properties.codarea && uf.is_last === 'True')
 			if (!properties.state || properties.state === '') {
 				properties.state = ufs.filter(uf => uf.cod === properties.codarea)[0].uf
 			}
