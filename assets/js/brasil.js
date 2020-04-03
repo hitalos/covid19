@@ -52,12 +52,14 @@
 		d3.csv('dados/casos.csv'),
 	]).then(([data, cases]) => {
 		prepareData(data.features, cases)
-		render(data.features, imported, mountTextTooltip)
+		renderMap(data.features, imported, mountTextTooltip)
+		renderGraph(cases)
 
 		setInterval(() => {
 			d3.csv('dados/casos.csv').then((cases) => {
 				prepareData(data.features, cases)
-				render(data.features, imported, mountTextTooltip)
+				renderMap(data.features, imported, mountTextTooltip)
+				renderGraph(cases)
 			})
 		}, 30000)
 	})

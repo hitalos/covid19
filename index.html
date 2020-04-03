@@ -17,16 +17,24 @@
 	<main>
 		<div class="container">
 			<div class="row">
-				<div class="col s12 m12 l12 xl12">
-					<svg id="map" width="100%" viewBox="0 0 960 500"></svg>
+				<div class="col s12 m6 l6 xl6">
+					<svg id="map" width="100%" viewBox="0 0 500 500"></svg>
 				</div>
-				<div id="totals" class="col s12 m12 l6 xl6">
+				<div class="col s12 m6 l6 xl6">
+					<svg id="graph" width="100%" viewBox="0 0 500 450">
+						<g class="yAxis"></g>
+						<g class="xAxis"></g>
+						<g class="bars"></g>
+					</svg>
+				</div>
+			</div>
+			<div class="row">
+				<div id="zoom" class="col s12 m6 l6 xl6">
+					<p>Use o mouse para mover e dar zoom na imagem e passe sobre os estados para ver detalhes.</p>
+				</div>
+				<div id="totals" class="col s12 m6 l6 xl6">
 					<h4 class="confirmed"></h4>
 					<h4 class="deaths"></h4>
-				</div>
-				<div id="zoom" class="col s12 m12 l6 xl6">
-					<p>Use o mouse para mover e dar zoom na imagem e passe sobre os estados para ver detalhes.</p>
-					<button class="btn right">Reset zoom</button>
 				</div>
 			</div>
 			<div class="row">

@@ -17,20 +17,25 @@
 	<main>
 		<div class="container">
 			<div class="row">
-				<div class="col s12 m12 l12 xl12">
-					<svg id="map" width="100%" viewBox="0 0 960 500"></svg>
+				<div class="col s12 m6 l6 xl6">
+					<svg id="map" width="100%" viewBox="0 0 500 400"></svg>
 				</div>
-				<div id="totals" class="col s12 m12 l6 xl6">
-					<h4 class="confirmed"></h4>
-					<h4 class="deaths"></h4>
-					<p>Caso estes totais sejam maiores que a soma dos múnicipios é porque eles consideram também casos "importados ou indefinidos".</p>
-				</div>
-				<div id="zoom" class="col s12 m12 l6 xl6">
-					<p>Use o mouse para mover e dar zoom na imagem e passe sobre os municípios para ver detalhes.</p>
-					<button class="btn right">Reset zoom</button>
+				<div class="col s12 m6 l6 xl6">
+					<svg id="graph" width="100%" viewBox="0 0 500 400">
+						<g class="yAxis"></g>
+						<g class="xAxis"></g>
+						<g class="bars"></g>
+					</svg>
 				</div>
 			</div>
 			<div class="row">
+				<div id="zoom" class="col s12 m6 l6 xl6">
+					<p>Use o mouse para mover e dar zoom na imagem e passe sobre os municípios para ver detalhes.</p>
+				</div>
+				<div id="totals" class="col s12 m6 l6 xl6">
+					<h4 class="confirmed"></h4>
+					<h4 class="deaths"></h4>
+				</div>
 				<div class="col s12 m12 l12 xl12">
 					<p style="text-align: right" class="hide-on-large-only">Deslize a tabela para o lado pra ver os outros municípios.</p>
 					<table id="tbl" class="highlight responsive-table">

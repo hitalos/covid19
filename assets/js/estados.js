@@ -55,12 +55,14 @@
 		d3.csv('dados/' + UF + '/casos.csv'),
 	]).then(([data, [demographicData], cases]) => {
 		prepareData(data.features, demographicData, cases)
-		render(data.features, imported, mountTextTooltip)
+		renderMap(data.features, imported, mountTextTooltip)
+		renderGraph(cases)
 
 		setInterval(() => {
 			d3.csv('dados/' + UF + '/casos.csv').then((cases) => {
 				prepareData(data.features, demographicData, cases)
-				render(data.features, imported, mountTextTooltip)
+				renderMap(data.features, imported, mountTextTooltip)
+				renderGraph(cases)
 			})
 		}, 30000)
 	})
