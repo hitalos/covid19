@@ -173,6 +173,7 @@ const renderGraph = (data) => {
 	const margin = { top: 200, left: 10, bottom: 20, right: 35 }
 	const innerWidth = width - margin.left - margin.right
 	const innerHeight = height - margin.top - margin.bottom
+	const latestDays = 30
 
 	const cValues = (d) => d.confirmed
 	const dValues = (d) => d.deaths
@@ -205,7 +206,7 @@ const renderGraph = (data) => {
 		return accum
 	}, []).sort((a, b) => b.date - a.date)
 
-	const lastMonthData = consolidate.slice(1, 30).reverse()
+	const lastMonthData = consolidate.slice(1, latestDays).reverse()
 	lastMonthData.push(lastTotals)
 
 	const cMax = d3.max(lastMonthData.map(cValues))
@@ -265,4 +266,11 @@ const renderGraph = (data) => {
 		.transition().duration(3000).delay(100)
 		.attr('y', (d) => scaleL(dValues(d)))
 		.attr('height', (d) => innerHeight - scaleL(dValues(d)))
+
+	graph.append('text')
+		.attr('x', width / 2)
+		.attr('y', margin.top)
+		.style('text-anchor', 'middle')
+		.style('font-size', '1.75em')
+		.text(`Últimos ${latestDays} dias`)
 }
