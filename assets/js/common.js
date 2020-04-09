@@ -28,25 +28,25 @@ const showTooltip = (mountTextTooltip) => (text) => {
 }
 
 const paintScale = (xValues, height) => {
-	const [min, max] = d3.extent(xValues)
-	const values = d3.range(0, 5).reverse().map((n) => Math.round((max * n / 5)) + min)
-	const format = (str) => d3.format(',.1r')(str).replace(/,/g, '.')
-	const color = d3.scaleLinear().domain(d3.extent(values)).range(['#ffeecc', 'darkred'])
-	gScale.attr('transform', `translate(10 , ${height - 100})`)
-	const gValue = gScale.selectAll('g').data(values).enter().append('g')
+	const color = (_, n) => d3.scaleLinear().domain([5, 0]).range(['#ffeecc', 'darkred'])(n)
+	const scale = d3.scaleLinear().domain([d3.max(xValues), 0]).range([0, 42])
+	const axis = d3.axisRight(scale).ticks(6, ',.1r')
 
-	gValue.append('rect')
-		.attr('y', (_, i) => (i * 12))
-		.attr('width', 10).attr('height', 10)
-		.style('stroke', 'black').style('stroke-opacity', 0.5)
+	gScale.call(axis)
+		.classed('scale', true)
+		.attr('transform', `translate(10, ${height - 150}) scale(2)`)
+		.selectAll('line, path, rect').remove()
+
+	gScale.selectAll('g')
+		.append('rect')
+		.attr('width', 5).attr('height', 5)
+		.attr('transform', 'translate(2, -2)')
+		.style('stroke', 'black')
+		.style('stroke-width', 0.5)
+		.style('stroke-opacity', 0.25)
+
+	gScale.selectAll('rect')
 		.style('fill', color)
-
-	gValue.append('text')
-		.attr('dy', '1em')
-		.attr('x', 15)
-		.attr('y', (_, i) => (i * 12))
-		.style('text-anchor', 'start')
-		.text(format)
 }
 
 const mountTable = (data) => {

@@ -44,6 +44,9 @@ h4.confirmed, h4.deaths {
 	1px 1px 3px rgba(255, 255, 255, 0.5);
 	pointer-events: none;
 }
+#map .scale text {
+	text-anchor: start;
+}
 #graph text,
 #graph rect {
 	cursor: help;
