@@ -29,8 +29,10 @@ h4.confirmed, h4.deaths {
 	stroke: black;
 	stroke-width: 0.2px;
 }
-#map path:hover {
+#map path:hover,
+#map path:focus {
 	cursor: pointer;
+	outline: none;
 	stroke-linecap: square;
 	stroke-width: 1px;
 }
@@ -52,7 +54,9 @@ h4.confirmed, h4.deaths {
 	cursor: help;
 	pointer-events: all;
 }
-#graph g.bars > g:hover {
+#graph g.bars > g:hover,
+#graph g.bars > g:focus {
+	outline: none;
 	stroke: black;
 	stroke-width: 0.5;
 }

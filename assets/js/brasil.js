@@ -10,10 +10,6 @@
 	const imported = { properties: {} }
 
 	const mountTextTooltip = (d) => {
-		tooltip.transition().style('opacity', 0.9)
-			.style('left', () => (d3.event.pageX)+'px')
-			.style('top', () => (d3.event.pageY)+'px')
-
 		if (confirmed(d) && confirmed(d) !== 0) {
 			const tx = confirmed(d) !== 0 ? Math.round((deaths(d) / confirmed(d)) * 10000) / 100 : 0
 			return `<strong>${nome(d)}</strong><br>
@@ -44,7 +40,7 @@
 			if (properties.deaths === undefined) properties.deaths = 0
 			if (properties.populacao === undefined) properties.populacao = 0
 		})
-		data.sort((a, b) => b.properties.confirmed - a.properties.confirmed)
+		data.sort((a, b) => confirmed(b) - confirmed(a))
 	}
 
 	Promise.all([

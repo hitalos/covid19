@@ -20,11 +20,25 @@ const formatN = (str) => d3.format(',')(str).replace(/,/g, '.')
 
 const hideTooltip = () => tooltip.transition().duration(1000).style('opacity', 0)
 
-const showTooltip = (mountTextTooltip) => (text) => {
+const showTooltip = (mountTextTooltip) => (d, i, nodes) => {
 	tooltip.transition().style('opacity', 0.9)
-		.style('left', () => (d3.event.pageX)+'px')
-		.style('top', () => (d3.event.pageY)+'px')
-	tooltip.html(mountTextTooltip(text))
+		.style('left', () => {
+			if (d3.event.type === 'mouseover') return d3.event.pageX + 'px'
+			if (nodes[i].nodeName === 'path') {
+				const { x, width } = nodes[i].getBBox()
+				return `${x + width}px`
+			}
+			return '50%'
+		})
+		.style('top', () => {
+			if (d3.event.type === 'mouseover') return d3.event.pageY + 'px'
+			if (nodes[i].nodeName === 'path') {
+				const { y, height } = nodes[i].getBBox()
+				return `${y + height}px`
+			}
+			return '50%'
+		})
+	tooltip.html(mountTextTooltip(d))
 }
 
 const paintScale = (xValues, height) => {
@@ -74,9 +88,12 @@ const mountPaths = (data, path, mountTooltip) => {
 	gPolygons.selectAll('path').data(data, codarea).enter()
 		.append('path')
 		.attr('d', path)
+		.attr('tabindex', 0)
 		.style('fill', (d) => confirmed(d) === 0 ? null : color(confirmed(d)))
-		.on('mousemove', showTooltip(mountTooltip))
+		.on('mouseover', showTooltip(mountTooltip))
 		.on('mouseout', hideTooltip)
+		.on('focus', showTooltip(mountTooltip))
+		.on('blur', hideTooltip)
 
 	gPolygons.selectAll('path')
 		.transition().duration(1000)
@@ -240,11 +257,15 @@ const renderGraph = (data) => {
 		.enter()
 		.append('g')
 
-	gBars.on('mouseover', showTooltip(
-		(d) => `<strong>Data</strong>: ${yValues(d).toLocaleDateString()}<br>
-			<strong>Confirmados</strong>: ${cValues(d)}<br>
-			<strong>Mortos</strong>: ${dValues(d)}`))
+	const tt = (d) => `<strong>Data</strong>: ${yValues(d).toLocaleDateString()}<br>
+		<strong>Confirmados</strong>: ${cValues(d)}<br>
+		<strong>Mortos</strong>: ${dValues(d)}`
+
+	gBars.attr('tabindex', 0)
+		.on('mouseover', showTooltip(tt))
 		.on('mouseout', hideTooltip)
+		.on('focus', showTooltip(tt))
+		.on('blur', hideTooltip)
 
 	gBars.append('rect')
 		.style('fill', (d) => scaleColor(cValues(d)))

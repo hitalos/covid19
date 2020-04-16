@@ -47,6 +47,7 @@
 				}
 			})
 		})
+		data.sort((a, b) => confirmed(b) - confirmed(a))
 	}
 
 	Promise.all([
