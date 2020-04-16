@@ -38,7 +38,7 @@ const showTooltip = (mountTextTooltip) => (d, i, nodes) => {
 			}
 			return '50%'
 		})
-	tooltip.html(mountTextTooltip(d))
+	tooltip.html(mountTextTooltip(d, i, nodes))
 }
 
 const paintScale = (xValues, height) => {
@@ -257,9 +257,13 @@ const renderGraph = (data) => {
 		.enter()
 		.append('g')
 
-	const tt = (d) => `<strong>Data</strong>: ${yValues(d).toLocaleDateString()}<br>
-		<strong>Confirmados</strong>: ${cValues(d)}<br>
-		<strong>Mortos</strong>: ${dValues(d)}`
+	const tt = (d, i, nodes) => {
+		const previous = d3.select(nodes[i - 1]).datum().confirmed
+		return `<strong>Data</strong>: ${yValues(d).toLocaleDateString()}<br>
+			<strong>Confirmados</strong>: ${cValues(d)}<br>
+			<strong>Casos novos</strong>: ${previous !== 0 ? cValues(d) - previous : 'Dados ausentes para o dia anterior'}<br>
+			<strong>Mortos</strong>: ${dValues(d)}`
+	}
 
 	gBars.attr('tabindex', 0)
 		.on('mouseover', showTooltip(tt))
