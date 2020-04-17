@@ -292,10 +292,8 @@ const renderGraph = (data) => {
 		.attr('y', (d) => scaleL(dValues(d)))
 		.attr('height', (d) => innerHeight - scaleL(dValues(d)))
 
-	graph.append('text')
+	graph.select('text.title')
 		.attr('x', width / 2)
 		.attr('y', margin.top)
-		.style('text-anchor', 'middle')
-		.style('font-size', '1.75em')
 		.text(`Últimos ${latestDays} dias`)
 }
