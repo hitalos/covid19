@@ -42,9 +42,10 @@ const showTooltip = (mountTextTooltip) => (d, i, nodes) => {
 }
 
 const paintScale = (xValues, height) => {
-	const color = (_, n) => d3.scaleLinear().domain([5, 0]).range(['#ffeecc', 'darkred'])(n)
-	const scale = d3.scaleLinear().domain([d3.max(xValues), 0]).range([0, 42])
-	const axis = d3.axisRight(scale).ticks(6, ',.1r')
+	const extent = [d3.max(xValues), 0]
+	const color = (d) => d3.scaleLinear().domain(extent).range(['darkred', '#ffeecc'])(d)
+	const scale = d3.scaleLinear().domain(extent).range([0, 48])
+	const axis = d3.axisRight(scale).ticks(6, ',.2r')
 
 	gScale.call(axis)
 		.classed('scale', true)
@@ -84,7 +85,7 @@ const mountTable = (data) => {
 }
 
 const mountPaths = (data, path, mountTooltip) => {
-	const color = d3.scaleLinear().domain(d3.extent(xValues(data))).range(['#ffeecc', 'darkred'])
+	const color = d3.scaleLinear().domain([0, d3.max(xValues(data))]).range(['#ffeecc', 'darkred'])
 	gPolygons.selectAll('path').data(data, codarea).enter()
 		.append('path')
 		.attr('d', path)
