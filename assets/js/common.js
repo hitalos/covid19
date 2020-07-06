@@ -156,11 +156,11 @@ const zoomCtl = (g, mapBounds) => {
 const mountTotals = (data) => {
 	d3.select('#totals').select('.confirmed').text(() => {
 		const confirmedTotal = data.map(confirmed).reduce((accum, i) => accum + i, 0)
-		return `Total de confirmações: ${confirmedTotal}`
+		return `Total de confirmações: ${formatN(confirmedTotal)}`
 	})
 	d3.select('#totals').select('.deaths').text(() => {
 		const deathsTotal = data.map(deaths).reduce((accum, i) => accum + i, 0)
-		return `Total de mortes: ${deathsTotal}`
+		return `Total de mortes: ${formatN(deathsTotal)}`
 	})
 }
 
