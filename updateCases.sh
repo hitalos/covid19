@@ -6,7 +6,7 @@ STATES='AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC 
 DIR='.'
 TEMP=$(mktemp)
 if [[ "$1" != "" ]]; then
-  DIR=$1
+	DIR=$1
 fi
 if [[ "$2" != "" ]]; then
 	STATES=$2
@@ -14,13 +14,13 @@ fi
 
 REPO=$DIR/dados
 
-curl -sSL -o "$TEMP" 'https://brasil.io/dataset/covid19/caso?place_type=state&format=csv' &&	cp "$TEMP" "$REPO/casos.csv"
+curl -sS 'https://data.brasil.io/dataset/covid19/caso.csv.gz' | gzip -d > "$TEMP"
+grep 'state' "$TEMP" > "$REPO/casos.csv"
 
 for UF in $STATES; do
-	echo "Baixando $UF..."
-	curl -sSL -o "$TEMP" "https://brasil.io/dataset/covid19/caso?state=$UF&place_type=city&format=csv"
-	SIZE=$(stat -c '%s' "$TEMP")
-	if [[ "$SIZE" != "0" ]]; then
-		cp "$TEMP" "$REPO/$UF/casos.csv"
-	fi
+	echo "Filtrando dados de $UF..."
+	echo "date,state,city,place_type,confirmed,deaths,order_for_place,is_last,estimated_population_2019,city_ibge_code,confirmed_per_100k_inhabitants,death_rate" > "$REPO/$UF/casos.csv"
+	grep ",$UF," "$TEMP" | grep 'city' | while read -r LINE; do
+		echo "$LINE" >> "$REPO/$UF/casos.csv"
+	done
 done
