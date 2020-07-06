@@ -188,7 +188,7 @@ const renderGraph = (data) => {
 	const graph = d3.select('#graph')
 	const width = graph.attr('viewBox').split(' ')[2]
 	const height = graph.attr('viewBox').split(' ')[3]
-	const margin = { top: 200, left: 10, bottom: 20, right: 35 }
+	const margin = { top: 200, left: 10, bottom: 20, right: 45 }
 	const innerWidth = width - margin.left - margin.right
 	const innerHeight = height - margin.top - margin.bottom
 	const latestDays = 30
