@@ -24,3 +24,5 @@ for UF in $STATES; do
 		echo "$LINE" >> "$REPO/$UF/casos.csv"
 	done
 done
+
+rm "$TEMP"
