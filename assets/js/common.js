@@ -124,22 +124,22 @@ const mountTexts = (data, projection) => {
 	const centerX = (d) => projection(d3.geoCentroid(d))[0]
 	const centerY = (d) => projection(d3.geoCentroid(d))[1]
 
+	const zoomFactor = g.attr('transform') ? parseFloat(g.attr('transform').split(' ')[1].substr(6)) : 1
 	gTexts.selectAll('text')
 		.data(data, codarea).enter()
 		.append('text')
 		.attr('x', centerX)
 		.attr('y', centerY)
 		.attr('dy', '0.33em')
-		.style('font-size', '0.5em')
-		.text((d) => confirmed(d) > 0 ? confirmed(d) : '')
+		.style('font-size', `${.5 / zoomFactor}em`)
 
 	gTexts.selectAll('text')
 		.transition().duration(1000)
 		.style('fill', IsChangedField('confirmed', 'black', 'red'))
-		.style('font-size', IsChangedField('confirmed', '0.5em', '1.5em'))
+		.style('font-size', IsChangedField('confirmed', `${.5 / zoomFactor}em`, `${1.5 / zoomFactor}em`))
 		.transition().duration(1500)
 		.style('fill', 'black')
-		.style('font-size', '0.5em')
+		.style('font-size', `${.5 / zoomFactor}em`)
 
 	gTexts.selectAll('text')
 		.text((d) => confirmed(d) > 0 ? confirmed(d) : '')
@@ -147,7 +147,11 @@ const mountTexts = (data, projection) => {
 
 const zoomCtl = (g, mapBounds) => {
 	const zoom = d3.zoom()
-		.on('zoom', () => { g.attr('transform', d3.event.transform) })
+		.on('zoom', () => {
+			g.attr('transform', d3.event.transform)
+			gTexts.selectAll('text')
+				.style('font-size', `${0.5/d3.event.transform.k}em`)
+		})
 		.scaleExtent([1, 6])
 		.translateExtent(mapBounds)
 	svg.call(zoom)
