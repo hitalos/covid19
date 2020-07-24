@@ -118,7 +118,7 @@ const IsChangedField = (field, cb) => (d, i, nodes) => {
 
 const mountTexts = (data, projection) => {
 	const IsChangedField = (field, defaultValue, tempValue) => (d, i, nodes) => {
-		const n = parseInt(nodes[i].textContent, 10) || 0
+		const n = parseInt(nodes[i].textContent.replace('.', ''), 10) || 0
 		return d.properties[field] !== n ? tempValue : defaultValue
 	}
 	const centerX = (d) => projection(d3.geoCentroid(d))[0]
@@ -132,6 +132,7 @@ const mountTexts = (data, projection) => {
 		.attr('y', centerY)
 		.attr('dy', '0.33em')
 		.style('font-size', `${.5 / zoomFactor}em`)
+		.text((d) => confirmed(d) > 0 ? formatN(confirmed(d)) : '')
 
 	gTexts.selectAll('text')
 		.transition().duration(1000)
@@ -142,7 +143,7 @@ const mountTexts = (data, projection) => {
 		.style('font-size', `${.5 / zoomFactor}em`)
 
 	gTexts.selectAll('text')
-		.text((d) => confirmed(d) > 0 ? confirmed(d) : '')
+		.text((d) => confirmed(d) > 0 ? formatN(confirmed(d)) : '')
 }
 
 const zoomCtl = (g, mapBounds) => {
@@ -265,9 +266,9 @@ const renderGraph = (data) => {
 	const tt = (d, i, nodes) => {
 		const previous = d3.select(nodes[i - 1]).datum().confirmed
 		return `<strong>Data</strong>: ${yValues(d).toLocaleDateString()}<br>
-			<strong>Confirmados</strong>: ${cValues(d)}<br>
-			<strong>Casos novos</strong>: ${previous !== 0 ? cValues(d) - previous : 'Dados ausentes para o dia anterior'}<br>
-			<strong>Mortos</strong>: ${dValues(d)}`
+			<strong>Confirmados</strong>: ${formatN(cValues(d))}<br>
+			<strong>Casos novos</strong>: ${previous !== 0 ? formatN(cValues(d) - previous) : 'Dados ausentes para o dia anterior'}<br>
+			<strong>Mortos</strong>: ${formatN(dValues(d))}`
 	}
 
 	gBars.attr('tabindex', 0)

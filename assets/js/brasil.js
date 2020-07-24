@@ -13,8 +13,8 @@
 		if (confirmed(d) && confirmed(d) !== 0) {
 			const tx = confirmed(d) !== 0 ? Math.round((deaths(d) / confirmed(d)) * 10000) / 100 : 0
 			return `<strong>${nome(d)}</strong><br>
-				<strong>Casos confirmados:</strong> ${confirmed(d)}<br>
-				<strong>Mortes:</strong> ${deaths(d)}<br>
+				<strong>Casos confirmados:</strong> ${formatN(confirmed(d))}<br>
+				<strong>Mortes:</strong> ${formatN(deaths(d))}<br>
 				<strong>Proporção de mortes:</strong> ${tx}%<br>
 				<strong>População estimada:</strong> ${populacaoF(d)}<br>
 				<strong>Última atualização:</strong> ${lastUpdate(d)}`
