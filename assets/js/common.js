@@ -148,10 +148,10 @@ const mountTexts = (data, projection) => {
 
 const zoomCtl = (g, mapBounds) => {
 	const zoom = d3.zoom()
-		.on('zoom', () => {
-			g.attr('transform', d3.event.transform)
+		.on('zoom', (ev) => {
+			g.attr('transform', ev.transform)
 			gTexts.selectAll('text')
-				.style('font-size', `${0.5/d3.event.transform.k}em`)
+				.style('font-size', `${0.5/ev.transform.k}em`)
 		})
 		.scaleExtent([1, 6])
 		.translateExtent(mapBounds)
