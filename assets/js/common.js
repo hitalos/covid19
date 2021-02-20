@@ -20,25 +20,25 @@ const formatN = (str) => d3.format(',')(str).replace(/,/g, '.')
 
 const hideTooltip = () => tooltip.transition().duration(1000).style('opacity', 0)
 
-const showTooltip = (mountTextTooltip) => (d, i, nodes) => {
+const showTooltip = (mountTextTooltip) => (ev, d) => {
 	tooltip.transition().style('opacity', 0.9)
 		.style('left', () => {
-			if (d3.event.type === 'mouseover') return d3.event.pageX + 'px'
-			if (nodes[i].nodeName === 'path') {
-				const { x, width } = nodes[i].getBBox()
+			if (ev.type === 'mouseover') return ev.pageX + 'px'
+			if (ev.target.nodeName === 'path') {
+				const { x, width } = ev.target.getBBox()
 				return `${x + width}px`
 			}
 			return '50%'
 		})
 		.style('top', () => {
-			if (d3.event.type === 'mouseover') return d3.event.pageY + 'px'
-			if (nodes[i].nodeName === 'path') {
-				const { y, height } = nodes[i].getBBox()
+			if (ev.type === 'mouseover') return ev.pageY + 'px'
+			if (ev.target.nodeName === 'path') {
+				const { y, height } = ev.target.getBBox()
 				return `${y + height}px`
 			}
 			return '50%'
 		})
-	tooltip.html(mountTextTooltip(d, i, nodes))
+	tooltip.html(mountTextTooltip(ev, d))
 }
 
 const paintScale = (xValues, height) => {
@@ -91,7 +91,7 @@ const mountPaths = (data, path, mountTooltip) => {
 		.attr('d', path)
 		.attr('tabindex', 0)
 		.style('fill', (d) => confirmed(d) === 0 ? null : color(confirmed(d)))
-		.on('mouseover', showTooltip(mountTooltip))
+		.on('mouseover',showTooltip(mountTooltip))
 		.on('mouseout', hideTooltip)
 		.on('focus', showTooltip(mountTooltip))
 		.on('blur', hideTooltip)
@@ -100,12 +100,12 @@ const mountPaths = (data, path, mountTooltip) => {
 		.transition().duration(1000)
 		.style('fill', (d) => confirmed(d) === 0 ? null : color(confirmed(d)))
 
-		gPolygons.selectAll('path').on('click', (d) => {
+		gPolygons.selectAll('path').on('click', (ev, d) => {
 			if (d.properties.state) {
 				window.location = `/estados.html?UF=${d.properties.state}`
 				return
 			}
-			showTooltip(mountTooltip)(d)
+			showTooltip(mountTooltip)(ev, d)
 		})
 }
 
@@ -263,8 +263,9 @@ const renderGraph = (data) => {
 		.enter()
 		.append('g')
 
-	const tt = (d, i, nodes) => {
-		const previous = d3.select(nodes[i - 1]).datum().confirmed
+	const tt = (ev, d) => {
+		const previousEl = d3.select(ev.target.parentNode.previousSibling)
+		const previous = previousEl.data().length === 1 ? previousEl.datum().confirmed : 0
 		return `<strong>Data</strong>: ${yValues(d).toLocaleDateString()}<br>
 			<strong>Confirmados</strong>: ${formatN(cValues(d))}<br>
 			<strong>Casos novos</strong>: ${previous !== 0 ? formatN(cValues(d) - previous) : 'Dados ausentes para o dia anterior'}<br>

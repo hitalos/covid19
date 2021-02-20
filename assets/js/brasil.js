@@ -9,7 +9,7 @@
 	]
 	const imported = { properties: {} }
 
-	const mountTextTooltip = (d) => {
+	const mountTextTooltip = (ev, d) => {
 		if (confirmed(d) && confirmed(d) !== 0) {
 			const tx = confirmed(d) !== 0 ? Math.round((deaths(d) / confirmed(d)) * 10000) / 100 : 0
 			return `<strong>${nome(d)}</strong><br>

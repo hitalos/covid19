@@ -1,6 +1,6 @@
 {
   "name": "covid-19",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "d3": "^5.15.0"
+    "d3": "^6.5.0"
   }
 }
