@@ -233,15 +233,16 @@ const renderGraph = (data) => {
 	lastMonthData.push(lastTotals)
 
 	const cMax = d3.max(lastMonthData.map(cValues))
+	const cMin = d3.min(lastMonthData.map(cValues))
 	const scaleL = d3.scaleLinear()
-		.domain([cMax, 0])
+		.domain([cMax, cMin])
 		.range([0, innerHeight])
 	const scaleB = d3.scaleBand()
 		.domain(lastMonthData.map(yValues))
 		.range([0, innerWidth])
 		.padding(0.1)
 	const scaleColor = d3.scaleLinear()
-		.domain([0, cMax])
+		.domain([cMin, cMax])
 		.range(['#ffeecc', 'darkred'])
 
 	graph.select('g.yAxis')
