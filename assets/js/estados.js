@@ -18,7 +18,7 @@
 	}
 
 	const prepareData = (data, demographicData, covid19) => {
-		const cases = covid19.filter(m => m.state === UF && m.is_last === 'True' && m.place_type === 'city')
+		const cases = covid19.filter(m => m.state === UF && m.is_last === 'True')
 		const [importedCases] = cases.filter(m => m.city === "Importados/Indefinidos")
 		imported.properties = {
 			codarea: 0,

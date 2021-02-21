@@ -15,14 +15,13 @@ fi
 REPO=$DIR/dados
 
 curl -sS 'https://data.brasil.io/dataset/covid19/caso.csv.gz' | gzip -d > "$TEMP"
-grep 'state' "$TEMP" > "$REPO/casos.csv"
+awk 'BEGIN { FS=","; OFS="," } /state/ { print $1,$2,$5,$6,$8,$11 }' "$TEMP" > "$REPO/casos.csv"
 
 for UF in $STATES; do
 	echo "Filtrando dados de $UF..."
-	echo "date,state,city,place_type,confirmed,deaths,order_for_place,is_last,estimated_population_2019,city_ibge_code,confirmed_per_100k_inhabitants,death_rate" > "$REPO/$UF/casos.csv"
-	grep ",$UF," "$TEMP" | grep 'city' | while read -r LINE; do
-		echo "$LINE" >> "$REPO/$UF/casos.csv"
-	done
+	echo "date,state,city,confirmed,deaths,is_last" > "$REPO/$UF/casos.csv"
+	awk "BEGIN { FS=\",\"; OFS=\",\" } /,$UF,.*,city/ { print \$1,\$2,\$3,\$5,\$6,\$8 }" "$TEMP" >> "$REPO/$UF/casos.csv"
+	gzip -9 -k -f "$REPO/$UF/casos.csv"
 done
 
 rm "$TEMP"
