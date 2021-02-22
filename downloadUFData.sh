@@ -12,7 +12,7 @@ if [[ "$N" == "" ]]; then
 	exit 1
 fi
 
-mkdir dados/$UF
+mkdir -p "dados/$UF"
 
-curl -s "https://servicodados.ibge.gov.br/api/v2/malhas/$N/?formato=application/vnd.geo+json&resolucao=5" > dados/$UF/municipios.json
-curl -s "https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2019/variaveis/9324?localidades=N6\[N3\[$N\]\]\|N3\[$N\]" > dados/$UF/demographic.json
+curl -s "https://servicodados.ibge.gov.br/api/v2/malhas/$N/?formato=application/vnd.geo+json&resolucao=5" > "dados/$UF/municipios.json"
+curl -s "https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2019/variaveis/9324?localidades=N6\[N3\[$N\]\]\|N3\[$N\]" > "dados/$UF/demographic.json"
