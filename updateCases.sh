@@ -15,7 +15,8 @@ fi
 REPO=$DIR/dados
 
 curl -sS 'https://data.brasil.io/dataset/covid19/caso.csv.gz' | gzip -d > "$TEMP"
-awk 'BEGIN { FS=","; OFS="," } /state/ { print $1,$2,$5,$6,$8,$11 }' "$TEMP" > "$REPO/casos.csv"
+awk 'BEGIN { FS=","; OFS="," } /state/ { print $1,$2,$5,$6,$8,$10,$11 }' "$TEMP" > "$REPO/casos.csv"
+gzip -9 -k -f "$REPO/casos.csv"
 
 for UF in $STATES; do
 	echo "Filtrando dados de $UF..."

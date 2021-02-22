@@ -32,7 +32,7 @@
 			if (c.length > 0) {
 				properties.confirmed = parseInt(c[0].confirmed, 10) || 0
 				properties.deaths = parseInt(c[0].deaths, 10) || 0
-				properties.populacao = parseInt(c[0].estimated_population_2019, 10) || 0
+				properties.populacao = parseInt(c[0].estimated_population, 10) || 0
 				properties.lastUpdate = c[0].date.split('-').reverse().join('/')
 				return
 			}
