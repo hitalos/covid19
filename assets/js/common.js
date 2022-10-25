@@ -1,22 +1,36 @@
-const svg = d3.select('#map')
+import {
+	axisBottom,
+	axisRight,
+	format,
+	geoCentroid,
+	geoMercator,
+	geoPath,
+	max,
+	min,
+	scaleBand,
+	scaleLinear,
+	select,
+	zoom,
+} from 'd3'
+
+const svg = select('#map')
 const g = svg.append('g')
 const gPolygons = g.append('g')
 const gTexts = g.append('g')
 const gScale = svg.append('g')
 const options = { sortField: 'confirmed', sortDesc: true }
-const tooltip = d3.select('.col').insert('div').classed('tooltip', true).style('opacity', 0)
+const tooltip = select('.col').insert('div').classed('tooltip', true).style('opacity', 0)
 
-const nome = (d) => d.properties.nome || d.properties.state
 const codarea = (d) => d.properties.codarea
-const confirmed = (d) => d.properties.confirmed || 0
-const confirmedF = (d) => formatN(d.properties.confirmed || 0)
-const deaths = (d) => d.properties.deaths || 0
-const deathsF = (d) => formatN(d.properties.deaths || 0)
-const lastUpdate = (d) => d.properties.lastUpdate
-const populacao = (d) => d.properties.populacao || 0
-const populacaoF = (d) => formatN(d.properties.populacao || 0)
 const xValues = (data) => data.map(confirmed)
-const formatN = (str) => d3.format(',')(str).replace(/,/g, '.')
+export const nome = (d) => d.properties.nome || d.properties.state
+export const confirmed = (d) => d.properties.confirmed || 0
+export const confirmedF = (d) => formatN(d.properties.confirmed || 0)
+export const deaths = (d) => d.properties.deaths || 0
+export const deathsF = (d) => formatN(d.properties.deaths || 0)
+export const lastUpdate = (d) => d.properties.lastUpdate
+export const populacaoF = (d) => formatN(d.properties.populacao || 0)
+export const formatN = (str) => format(',')(str).replace(/,/g, '.')
 
 const hideTooltip = () => tooltip.transition().duration(1000).style('opacity', 0)
 
@@ -42,10 +56,10 @@ const showTooltip = (mountTextTooltip) => (ev, d) => {
 }
 
 const paintScale = (xValues, height) => {
-	const extent = [d3.max(xValues), 0]
-	const color = (d) => d3.scaleLinear().domain(extent).range(['darkred', '#ffeecc'])(d)
-	const scale = d3.scaleLinear().domain(extent).range([0, 48])
-	const axis = d3.axisRight(scale).ticks(6, ',.2r')
+	const extent = [max(xValues), 0]
+	const color = (d) => scaleLinear().domain(extent).range(['darkred', '#ffeecc'])(d)
+	const scale = scaleLinear().domain(extent).range([0, 48])
+	const axis = axisRight(scale).ticks(6, ',.2r')
 
 	gScale.call(axis)
 		.classed('scale', true)
@@ -68,7 +82,7 @@ const mountTable = (data) => {
 	const val = (d) => d.properties[options.sortField]
 	const localData = data.sort((a, b) => options.sortDesc ? val(b) - val(a) : val(a) - val(b))
 
-	const trsEnter = d3.select('#tbl').select('tbody').selectAll('tr')
+	const trsEnter = select('#tbl').select('tbody').selectAll('tr')
 		.data(localData, codarea).enter().append('tr')
 
 	trsEnter.append('td').classed('local', true).text(nome)
@@ -77,7 +91,7 @@ const mountTable = (data) => {
 	trsEnter.append('td').classed('lastUpdate', true).text(lastUpdate)
 	trsEnter.append('td').text(populacaoF)
 
-	const trs = d3.select('#tbl').select('tbody').selectAll('tr')
+	const trs = select('#tbl').select('tbody').selectAll('tr')
 	trs.selectAll('td.local').text(nome)
 	trs.selectAll('td.confirmed').text(confirmedF)
 	trs.selectAll('td.lastUpdate').text(lastUpdate)
@@ -85,7 +99,7 @@ const mountTable = (data) => {
 }
 
 const mountPaths = (data, path, mountTooltip) => {
-	const color = d3.scaleLinear().domain([0, d3.max(xValues(data))]).range(['#ffeecc', 'darkred'])
+	const color = scaleLinear().domain([0, max(xValues(data))]).range(['#ffeecc', 'darkred'])
 	gPolygons.selectAll('path').data(data, codarea).enter()
 		.append('path')
 		.attr('d', path)
@@ -121,8 +135,8 @@ const mountTexts = (data, projection) => {
 		const n = parseInt(nodes[i].textContent.replace('.', ''), 10) || 0
 		return d.properties[field] !== n ? tempValue : defaultValue
 	}
-	const centerX = (d) => projection(d3.geoCentroid(d))[0]
-	const centerY = (d) => projection(d3.geoCentroid(d))[1]
+	const centerX = (d) => projection(geoCentroid(d))[0]
+	const centerY = (d) => projection(geoCentroid(d))[1]
 
 	const zoomFactor = g.attr('transform') ? parseFloat(g.attr('transform').split(' ')[1].substr(6)) : 1
 	gTexts.selectAll('text')
@@ -147,7 +161,7 @@ const mountTexts = (data, projection) => {
 }
 
 const zoomCtl = (g, mapBounds) => {
-	const zoom = d3.zoom()
+	const zoomFunc = zoom()
 		.on('zoom', (ev) => {
 			g.attr('transform', ev.transform)
 			gTexts.selectAll('text')
@@ -155,26 +169,26 @@ const zoomCtl = (g, mapBounds) => {
 		})
 		.scaleExtent([1, 6])
 		.translateExtent(mapBounds)
-	svg.call(zoom)
+	svg.call(zoomFunc)
 }
 
 const mountTotals = (data) => {
-	d3.select('#totals').select('.confirmed').text(() => {
+	select('#totals').select('.confirmed').text(() => {
 		const confirmedTotal = data.map(confirmed).reduce((accum, i) => accum + i, 0)
 		return `Total de confirmações: ${formatN(confirmedTotal)}`
 	})
-	d3.select('#totals').select('.deaths').text(() => {
+	select('#totals').select('.deaths').text(() => {
 		const deathsTotal = data.map(deaths).reduce((accum, i) => accum + i, 0)
 		return `Total de mortes: ${formatN(deathsTotal)}`
 	})
 }
 
-const renderMap = (data, imported, mountTextTooltip) => {
+export const renderMap = (data, imported, mountTextTooltip) => {
 	const width = svg.attr('viewBox').split(' ')[2]
 	const height = svg.attr('viewBox').split(' ')[3]
-	const projection = d3.geoMercator()
+	const projection = geoMercator()
 		.fitSize([width, height], { type: 'FeatureCollection', features: data })
-	const path = d3.geoPath(projection)
+	const path = geoPath(projection)
 
 	mountPaths(data, path, mountTextTooltip)
 	mountTexts(data, projection)
@@ -189,8 +203,8 @@ const renderMap = (data, imported, mountTextTooltip) => {
 	mountTotals(data)
 }
 
-const renderGraph = (data) => {
-	const graph = d3.select('#graph')
+export const renderGraph = (data) => {
+	const graph = select('#graph')
 	const width = graph.attr('viewBox').split(' ')[2]
 	const height = graph.attr('viewBox').split(' ')[3]
 	const margin = { top: 200, left: 10, bottom: 20, right: 50 }
@@ -232,27 +246,27 @@ const renderGraph = (data) => {
 	const lastMonthData = consolidate.slice(1, latestDays).reverse()
 	lastMonthData.push(lastTotals)
 
-	const cMax = d3.max(lastMonthData.map(cValues))
-	const cMin = d3.min(lastMonthData.map(cValues))
-	const scaleL = d3.scaleLinear()
+	const cMax = max(lastMonthData.map(cValues))
+	const cMin = min(lastMonthData.map(cValues))
+	const scaleL = scaleLinear()
 		.domain([cMax, cMin])
 		.range([0, innerHeight])
-	const scaleB = d3.scaleBand()
+	const scaleB = scaleBand()
 		.domain(lastMonthData.map(yValues))
 		.range([0, innerWidth])
 		.padding(0.1)
-	const scaleColor = d3.scaleLinear()
+	const scaleColor = scaleLinear()
 		.domain([cMin, cMax])
 		.range(['#ffeecc', 'darkred'])
 
 	graph.select('g.yAxis')
 		.attr('transform', `translate(${margin.left + innerWidth}, ${margin.top})`)
-		.call(d3.axisRight(scaleL))
+		.call(axisRight(scaleL))
 		.selectAll('line')
 		.attr('x1', -innerWidth)
 	graph.select('g.xAxis')
 		.attr('transform', `translate(${margin.left}, ${margin.top + innerHeight})`)
-		.call(d3.axisBottom(scaleB).tickFormat((d) => d.getDate()))
+		.call(axisBottom(scaleB).tickFormat((d) => d.getDate()))
 		.selectAll('text')
 		.append('title')
 		.text((d) => d.toLocaleDateString())
@@ -265,7 +279,7 @@ const renderGraph = (data) => {
 		.append('g')
 
 	const tt = (ev, d) => {
-		const previousEl = d3.select(ev.target.parentNode.previousSibling)
+		const previousEl = select(ev.target.parentNode.previousSibling)
 		const previous = previousEl.data().length === 1 ? previousEl.datum().confirmed : 0
 		return `<strong>Data</strong>: ${yValues(d).toLocaleDateString()}<br>
 			<strong>Confirmados</strong>: ${formatN(cValues(d))}<br>

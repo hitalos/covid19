@@ -4,12 +4,15 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "esbuild --minify --bundle --outdir=assets/js --out-extension:.js=.min.js assets/js/brasil.js assets/js/estados.js",
+		"dev": "esbuild --sourcemap --watch --bundle --outdir=assets/js --out-extension:.js=.min.js assets/js/brasil.js assets/js/estados.js",
+		"clean": "rm -f assets/js/*.min.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "d3": "^6.5.0"
+    "d3": "^7.6.1",
+    "esbuild": "^0.15.12"
   }
 }
